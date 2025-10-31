@@ -26,3 +26,11 @@ In this project following technologies were used:
 - Mediator/CQRS
 - Design Patterns (DI, Mediator etc...)
 - Docker
+
+### Task List
+
+- [X] Docker API integration
+- [X] Server starting with port allocation
+- [ ] Exception handling
+- [ ] Refactor of API endpoints
+- [ ] Matchmaking queue for players 
