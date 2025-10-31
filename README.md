@@ -18,6 +18,7 @@ You can run it through a local run in IDE or built docker image.
 - Background worker for cleaning up inactive servers with container removal
 
 **Tech Stack**
+
 In this project following technologies were used:
 - .NET 8
 - ASP.NET Core
