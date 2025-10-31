@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>MatchmakingService</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +21,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MatchmakingService.Abstractions\MatchmakingService.Abstractions.csproj" />
+      <ProjectReference Include="..\MatchmakingService.Application\MatchmakingService.Application.csproj" />
       <ProjectReference Include="..\MatchmakingService.Core\MatchmakingService.Core.csproj" />
+      <ProjectReference Include="..\MatchmakingService.DependencyInjection\MatchmakingService.DependencyInjection.csproj" />
+      <ProjectReference Include="..\MatchmakingService.Infrastructure\MatchmakingService.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Workers\" />
     </ItemGroup>
 
 </Project>
