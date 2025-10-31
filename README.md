@@ -6,6 +6,10 @@ This is an additional service for game project: https://devlanger.itch.io/nin-to
 
 This project is WIP and yet to be refined/developed.
 
+**How to run**
+You can run it through a local run in IDE or built docker image.
+(More in-depth guide yet to be added)
+
 **Features**
 - Servers in-memory management
 - Creating a room (docker container using Docker.DotNet API)
