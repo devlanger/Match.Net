@@ -6,18 +6,18 @@ This is an additional service for game project: https://devlanger.itch.io/nin-to
 
 This project is WIP and yet to be refined/developed.
 
-**How to run**
+**1. How to run**
 You can run it through a local run in IDE or built docker image.
 (More in-depth guide yet to be added)
 
-**Features**
+**2. Features**
 - Servers in-memory management
 - Creating a room (docker container using Docker.DotNet API)
   - Dynamic port allocation for containers
 - Listing servers for users using ASP.NET Web API
 - Background worker for cleaning up inactive servers with container removal
 
-**Tech Stack**
+**3. Tech Stack**
 
 In this project following technologies were used:
 - .NET 8
@@ -27,7 +27,7 @@ In this project following technologies were used:
 - Design Patterns (DI, Mediator etc...)
 - Docker
 
-### Task List
+### 4. Task List
 
 - [X] Docker API integration
 - [X] Server starting with port allocation
