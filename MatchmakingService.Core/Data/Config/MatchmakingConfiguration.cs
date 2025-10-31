@@ -2,6 +2,7 @@
 
 public class MatchmakingConfiguration
 {
+    public required string GameServerContainerName { get; set; } = "";
     public string ContainerName { get; set; } = "container_instance";
     public required string HeartbeatUrl { get; set; }
     public int StartingPort { get; set; } = 7777;

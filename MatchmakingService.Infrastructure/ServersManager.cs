@@ -45,19 +45,19 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         var env = new List<string> {
             $"CONTAINER_NAME={containerName}",
             $"HEARTBEAT_URL={_configuration.HeartbeatUrl}",
-            $"SERVER_PORT={hostPort}"  // if your image reads SERVER_PORT
+            $"SERVER_PORT={hostPort}"
         };
 
         // Create container
         var createParams = new CreateContainerParameters
         {
-            Image = "nin-server",  // your Unity server Docker image name
+            Image = _configuration.GameServerContainerName,
             Name = containerName,
             Env = env,
             ExposedPorts = new Dictionary<string, EmptyStruct>
             {
-                { $"{_configuration.ContainerExposedPort}/tcp", default(EmptyStruct) },  // internal port that Unity listens on
-                { $"{_configuration.ContainerExposedPort}/udp", default(EmptyStruct) }  // internal port that Unity listens on
+                { $"{_configuration.ContainerExposedPort}/tcp", default(EmptyStruct) },
+                { $"{_configuration.ContainerExposedPort}/udp", default(EmptyStruct) }
             },
             HostConfig = new HostConfig
             {
@@ -87,7 +87,6 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         var containerId = response.ID;
         instance.Id = containerId;
 
-        // Start container
         var started = await docker.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
 
         if (!started)
