@@ -19,6 +19,7 @@ builder.Services.Configure<MatchmakingConfiguration>(
     builder.Configuration.GetSection("MatchmakingConfiguration"));
 
 builder.Services.AddControllers();
+builder.Services.AddLogging();
 
 var app = builder.Build();
 

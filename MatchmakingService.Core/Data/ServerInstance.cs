@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace MatchmakingService.Core.Data;
 
 public class ServerInstance
@@ -10,4 +12,5 @@ public class ServerInstance
     public DateTime LastHeartbeat { get; set; }
     public int LastPlayersCount { get; set; } = -1;
     public bool IsClosing { get; set; }
+    public string Address { get; set; }
 }

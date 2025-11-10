@@ -11,7 +11,7 @@ public class GetServersListQueryHandler(IServerManager serverManager)
     {
         var result = serverManager.Servers
             .Where(s => !s.IsClosing)
-            .Select(s => new ServerInstanceResponseModel(s.ContainerName, s.PlayersCount, s.Port))
+            .Select(s => new ServerInstanceResponseModel(s.ContainerName, s.PlayersCount, s.Address, s.Port))
             .Take(request.Size).Skip(request.Page)
             .ToList();
         

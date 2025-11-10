@@ -12,7 +12,8 @@ public class ServerCleanupService(IServerManager serversManager) : BackgroundSer
 {
     private static string DockerUrl()
     {
-        return "npipe://./pipe/docker_engine";
+        var env = Environment.GetEnvironmentVariable("DOCKER_SOCKET_URL");
+        return env ?? "npipe://./pipe/docker_engine";
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,7 +42,6 @@ public class ServerCleanupService(IServerManager serversManager) : BackgroundSer
                 });
 
                 Console.WriteLine($"Stopping idle server: {server.ContainerName}");
-                Process.Start("docker", $"stop {server.ContainerName}");
                 serversManager.Servers.Remove(server);
             }
             server.LastPlayersCount = server.PlayersCount;
