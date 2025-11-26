@@ -20,14 +20,13 @@ public class ServerCleanupService(IServerManager serversManager) : BackgroundSer
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            CleanupIdleServers();
+            await CleanupIdleServers();
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
     }
 
-    private void CleanupIdleServers()
+    private async Task CleanupIdleServers()
     {
-        Console.WriteLine("Clearing Idle Servers");
         foreach (var server in serversManager.Servers.ToList())
         {
             if (IsServerReadyForCleanup(server))
@@ -36,7 +35,7 @@ public class ServerCleanupService(IServerManager serversManager) : BackgroundSer
                 var docker = new DockerClientConfiguration(new Uri(DockerUrl()))
                     .CreateClient();
                 
-                var response = docker.Containers.RemoveContainerAsync(server.Id, new ContainerRemoveParameters()
+                await docker.Containers.RemoveContainerAsync(server.Id, new ContainerRemoveParameters()
                 {
                     Force = true
                 });

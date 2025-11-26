@@ -16,23 +16,28 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
 
     public List<ServerInstance> Servers { get; } = [];
 
+    private readonly object _portLock = new();
+
     private int GetFreePort()
     {
-        for (var i = _configuration.StartingPort; i < _configuration.EndingPort; i++)
+        lock (_portLock)
         {
-            if (Servers.Any(s => s.Port == i))
-                continue;
+            for (var i = _configuration.StartingPort; i < _configuration.EndingPort; i++)
+            {
+                if (Servers.Any(s => s.Port == i))
+                    continue;
 
-            return i;
+                return i;
+            }
+
+            return -1;
         }
-
-        return -1;
     }
-    
+
     private DockerClient CreateDockerClient()
     {
         // Dynamically detect Docker endpoint
-        var dockerUri = Environment.GetEnvironmentVariable("DOCKER_SOCKET_URL") 
+        var dockerUri = Environment.GetEnvironmentVariable("DOCKER_SOCKET_URL")
                         ?? (OperatingSystem.IsWindows()
                             ? "npipe://./pipe/docker_engine"
                             : "unix:///var/run/docker.sock");
@@ -40,7 +45,7 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         logger.LogInformation("Using Docker endpoint: {DockerUri}", dockerUri);
         return new DockerClientConfiguration(new Uri(dockerUri)).CreateClient();
     }
-    
+
     public async Task<ServerInstance> LaunchUnityServerAsync()
     {
         var hostPort = GetFreePort();
@@ -48,15 +53,15 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         {
             return null;
         }
-        
-        logger.LogInformation($"DOCKER URL: {NpipePipeDockerEngine()}");
-        
+
         var containerName = $"{_configuration.ContainerName}-{hostPort}";
-        var instance = new ServerInstance { ContainerName = containerName, Port = hostPort, PlayersCount = 1, LastHeartbeat = DateTime.UtcNow };
+        var instance = new ServerInstance
+            { ContainerName = containerName, Port = hostPort, PlayersCount = 1, LastHeartbeat = DateTime.UtcNow };
         using var docker = CreateDockerClient();
 
         // The environment variables to pass
-        var env = new List<string> {
+        var env = new List<string>
+        {
             $"CONTAINER_NAME={containerName}",
             $"HEARTBEAT_URL={_configuration.HeartbeatUrl}",
             $"SERVER_PORT={hostPort}",
@@ -75,21 +80,25 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
             },
             HostConfig = new HostConfig
             {
-                NetworkMode = "host",
+                NetworkMode = _configuration.NetworkName,
                 PortBindings = new Dictionary<string, IList<PortBinding>>
                 {
                     {
                         $"{_configuration.ContainerExposedPort}/tcp",
-                        new List<PortBinding> {
-                            new PortBinding {
+                        new List<PortBinding>
+                        {
+                            new PortBinding
+                            {
                                 HostPort = hostPort.ToString()
                             }
                         }
                     },
                     {
                         $"{_configuration.ContainerExposedPort}/udp",
-                        new List<PortBinding> {
-                            new PortBinding {
+                        new List<PortBinding>
+                        {
+                            new PortBinding
+                            {
                                 HostPort = hostPort.ToString()
                             }
                         }
@@ -112,39 +121,5 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
 
         Servers.Add(instance);
         return instance;
-    }
-    
-    private static async Task<string> GetPublicIpAddress()
-    {
-        using HttpClient client = new HttpClient();
-        try
-        {
-            // Request API to get public IP
-            var response = await client.GetAsync("https://api.ipify.org?format=json");
-            response.EnsureSuccessStatusCode();
-                
-            // Parse the returned JSON response
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonObject = JObject.Parse(jsonResponse);
-                
-            // Extract IP address
-            return jsonObject["ip"].ToString();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-            return null;
-        }
-    }
-    
-    public static string NpipePipeDockerEngine()
-    {
-        var env = Environment.GetEnvironmentVariable("DOCKER_SOCKET_URL");
-        if (!string.IsNullOrEmpty(env))
-            return env;
-
-        return OperatingSystem.IsWindows()
-            ? "npipe://./pipe/docker_engine"
-            : "unix:///var/run/docker.sock";
     }
 }

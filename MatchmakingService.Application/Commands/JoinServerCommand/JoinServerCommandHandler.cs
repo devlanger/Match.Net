@@ -8,7 +8,6 @@ public class JoinServerCommandHandler(IServerManager serversManager, ILogger<Joi
 {
     public async Task<JoinServerCommandResponse> Handle(JoinServerCommand request, CancellationToken cancellationToken)
     {
-        logger.LogError("THIS IS UPDATED CODE");
         var serverInstance = await serversManager.LaunchUnityServerAsync();
 
         return new JoinServerCommandResponse(serverInstance.ContainerName, serverInstance.PlayersCount, serverInstance.Port);
