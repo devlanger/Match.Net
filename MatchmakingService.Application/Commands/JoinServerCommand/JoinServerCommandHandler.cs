@@ -8,8 +8,8 @@ public class JoinServerCommandHandler(IServerManager serversManager, ILogger<Joi
 {
     public async Task<JoinServerCommandResponse> Handle(JoinServerCommand request, CancellationToken cancellationToken)
     {
-        var serverInstance = await serversManager.LaunchUnityServerAsync();
+        var serverInstance = await serversManager.LaunchUnityServerAsync(request.MapName, cancellationToken);
 
-        return new JoinServerCommandResponse(serverInstance.ContainerName, serverInstance.PlayersCount, serverInstance.Port);
+        return new JoinServerCommandResponse(serverInstance.ContainerName, serverInstance.PlayersCount, serverInstance.Port, serverInstance.MapName);
     }
 }

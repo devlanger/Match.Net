@@ -46,7 +46,7 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         return new DockerClientConfiguration(new Uri(dockerUri)).CreateClient();
     }
 
-    public async Task<ServerInstance> LaunchUnityServerAsync()
+    public async Task<ServerInstance> LaunchUnityServerAsync(string mapName, CancellationToken cancellationToken = default)
     {
         var hostPort = GetFreePort();
         if (hostPort == -1)
@@ -56,7 +56,7 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
 
         var containerName = $"{_configuration.ContainerName}-{hostPort}";
         var instance = new ServerInstance
-            { ContainerName = containerName, Port = hostPort, PlayersCount = 1, LastHeartbeat = DateTime.UtcNow };
+            { ContainerName = containerName, Port = hostPort, PlayersCount = 1, LastHeartbeat = DateTime.UtcNow, MapName = mapName };
         using var docker = CreateDockerClient();
 
         // The environment variables to pass
@@ -65,6 +65,7 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
             $"CONTAINER_NAME={containerName}",
             $"HEARTBEAT_URL={_configuration.HeartbeatUrl}",
             $"SERVER_PORT={hostPort}",
+            $"MAP_NAME={mapName}",
         };
 
         // Create container

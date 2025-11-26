@@ -5,5 +5,5 @@ namespace MatchmakingService.Abstractions;
 public interface IServerManager
 {
     List<ServerInstance> Servers { get; }
-    Task<ServerInstance> LaunchUnityServerAsync();
+    Task<ServerInstance> LaunchUnityServerAsync(string mapName, CancellationToken cancellationToken = default);
 }

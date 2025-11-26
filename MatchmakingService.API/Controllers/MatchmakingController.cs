@@ -13,7 +13,7 @@ namespace MatchmakingService.Controllers;
 public class MatchmakingController(IServerManager serversManager, IMediator mediator) : ControllerBase
 {
     [HttpPost("join")]
-    public async Task<IActionResult> Join() => Ok(await mediator.Send(new JoinServerCommand()));
+    public async Task<IActionResult> Join([FromBody] JoinServerCommand command) => Ok(await mediator.Send(command));
     
     [HttpGet("list")]
     public async Task<IActionResult> List() => Ok(await mediator.Send(new GetServersListQuery()));

@@ -1,3 +1,3 @@
 ﻿namespace MatchmakingService.Application.Commands.JoinServerCommand;
 
-public record JoinServerCommandResponse(string ContainerName, int PlayersCount, int Port);
+public record JoinServerCommandResponse(string ContainerName, int PlayersCount, int Port, string MapName);
