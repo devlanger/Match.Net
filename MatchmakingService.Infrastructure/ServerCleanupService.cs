@@ -48,5 +48,5 @@ public class ServerCleanupService(IServerManager serversManager) : BackgroundSer
     }
     
     private bool IsServerReadyForCleanup(ServerInstance server) =>
-        (DateTime.UtcNow - server.LastHeartbeat).TotalSeconds > 20 || (server.PlayersCount <= 0 && server.LastPlayersCount == server.PlayersCount);
+        (DateTime.UtcNow - server.LastHeartbeat).TotalSeconds > 20 || (server.PlayersCount <= 0 && server.LastPlayersCount == server.PlayersCount && DateTime.UtcNow > server.StartTime.AddSeconds(10));
 }

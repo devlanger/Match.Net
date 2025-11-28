@@ -111,6 +111,7 @@ public class ServersManager(IOptions<MatchmakingConfiguration> matchmakingConfig
         var response = await docker.Containers.CreateContainerAsync(createParams);
         var containerId = response.ID;
         instance.Id = containerId;
+        instance.StartTime = DateTime.UtcNow;
         //instance.Address = await GetPublicIpAddress();
 
         var started = await docker.Containers.StartContainerAsync(containerId, new ContainerStartParameters());

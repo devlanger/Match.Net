@@ -11,6 +11,7 @@ public class ServerInstance
     public int PlayersCount { get; set; }
     public int MaxPlayers { get; set; } = 5;
     public DateTime LastHeartbeat { get; set; }
+    public DateTime StartTime { get; set; }
     public int LastPlayersCount { get; set; } = -1;
     public bool IsClosing { get; set; }
     public string Address { get; set; }
